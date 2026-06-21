@@ -31,57 +31,29 @@ def get_new_words(noteFile, cacheFile):
     return set(noteWords) - set(cacheWords)
 
 
-def print_all(noteFile, cacheFile):
-    noteWords = read_note_file(noteFile)
-
-    for w in noteWords:
-        print(w)
-
-    diff = get_new_words(noteFile, cacheFile)
-    for a in diff:
-        cacheFile.write(a + "\n")
-
-
-def print_new(noteFile, cacheFile):
+def print_new_words(noteFile, cacheFile):
     diff = get_new_words(noteFile, cacheFile)
     for a in diff:
         cacheFile.write(a + "\n")
         print(a)
 
 
-def save_to(noteFile, cachedFile, saveFileName):
-    saveFile = open(saveFileName, "w")
-    diff = get_new_words(noteFile, cacheFile)
-
-    for w in diff:
-        saveFile.write(w + "\n")
-
-
 usage = "usage: %prog [options] <FILE>"
 parser = OptionParser(usage)
-parser.add_option("-a", "--all", action="store_true",
-                  help="print all words in file")
-parser.add_option("-s", "--save",  metavar="<FILE1>",
-                  help="save new words to <FILE1>")
 parser.add_option("-c", "--clear", action="store_true",
-                  help="clear cached words")
+                  help="clear words")
 
 (options, args) = parser.parse_args()
 
 
 if (options.clear):
-    open("words", "w").close()
+    open("words.txt", "w").close()
     sys.exit(0)
 
-cacheFile = open("words", "a+")
+cacheFile = open("words.txt", "a+")
 noteFile = open(sys.argv[len(sys.argv) - 1], "r")
 
-if (options.all):
-    print_all(noteFile, cacheFile)
-if (options.save):
-    save_to(noteFile, cacheFile, options.save)
-else:
-    print_new(noteFile, cacheFile)
+print_new_words(noteFile, cacheFile)
 
 
 noteFile.close()

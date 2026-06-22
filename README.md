@@ -5,7 +5,7 @@ Tolino Vocab Extractor is a python utility to extract highlighted words from Tol
 To run this app you need python 3.14.5+
 
 ``` bash
-    git clone https://github.com/YOUR_USERNAME/tolino-vocab-extractor.git
+    git clone https://github.com/xPatryk8/tovox
     cd tolino-vocab-extractor
 ```
 ## Note Format
@@ -37,4 +37,9 @@ To clear your existing words.txt:
 
 ``` bash
 python tovox.py notes.txt --clear
+```
+
+To get all avaliable options use:
+``` bash
+python tovox.py -h
 ```

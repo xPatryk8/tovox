@@ -2,24 +2,23 @@ import sys
 import argparse
 
 
-def read_words_file(cacheFile):
-    cacheWords = []
-    cacheFile.seek(0)
-    for line in cacheFile:
-        line = line.replace("\n", "")
-        cacheWords.append(line)
-
-    return cacheWords
+def read_words_file(wordsFile):
+    try:
+        with open(wordsFile, "r") as file:
+            return {line.strip() for line in file}
+    except FileNotFoundError:
+        return set()
 
 
 def read_note_file(noteFile):
     noteWords = []
-    for line in noteFile:
-        i = line.find('\"')
-        if (i != -1):
-            i2 = line.find('\"', i+1)
-            line = line[i+1:i2]
-            noteWords.append(line)
+    with open(noteFile, "r", encoding="utf-8") as file:
+        for line in file:
+            words = line.split('"')
+            if len(words) >= 3:
+                word = words[1].strip()
+                if word:
+                    noteWords.append(word)
 
     return noteWords
 
@@ -27,36 +26,40 @@ def read_note_file(noteFile):
 def get_new_words(noteFile, cacheFile):
     noteWords = read_note_file(noteFile)
     cacheWords = read_words_file(cacheFile)
+    newWords = []
 
-    return set(noteWords) - set(cacheWords)
+    for word in noteWords:
+        if word not in cacheWords:
+            newWords.append(word)
+            cacheWords.add(word)
 
-
-def print_new_words(noteFile, cacheFile):
-    diff = get_new_words(noteFile, cacheFile)
-    for a in diff:
-        cacheFile.write(a + "\n")
-        print(a)
+    return newWords
 
 
 def main():
     parser = argparse.ArgumentParser(
-        prog="tolino-notes", description="Simple program that takes your highlights from tolino notes and save all new words to file and print it")
+        prog="tolino-notes",
+        description="Extract new highlighted words and append them to words.txt"
+    )
     parser.add_argument("filename")
     parser.add_argument("-c", "--clear", action="store_true",
                         help="clear words.txt file")
     args = parser.parse_args()
 
-    if (args.clear):
+    wordsFilename = "words.txt"
+
+    if args.clear:
         open("words.txt", "w").close()
         sys.exit(0)
 
-    cacheFile = open("words.txt", "a+")
-    noteFile = open(args.filename, "r")
+    new_words = get_new_words(args.filename, wordsFilename)
 
-    print_new_words(noteFile, cacheFile)
+    if new_words:
+        with open(wordsFilename, "a") as file:
+            for word in new_words:
+                file.write(word + '\n')
+                print(word)
 
-    noteFile.close()
-    cacheFile.close()
 
-
-main()
+if __name__ == "__main__":
+    main()

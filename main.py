@@ -1,5 +1,6 @@
 import sys
 import argparse
+import datetime
 
 
 def read_words_file(wordsFile):
@@ -56,6 +57,8 @@ def main():
 
     if new_words:
         with open(wordsFilename, "a") as file:
+            now = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+            file.write(now + '\n')
             for word in new_words:
                 file.write(word + '\n')
                 print(word)

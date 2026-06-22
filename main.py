@@ -1,5 +1,5 @@
 import sys
-from optparse import OptionParser
+import argparse
 
 
 def read_words_file(cacheFile):
@@ -38,23 +38,25 @@ def print_new_words(noteFile, cacheFile):
         print(a)
 
 
-usage = "usage: %prog [options] <FILE>"
-parser = OptionParser(usage)
-parser.add_option("-c", "--clear", action="store_true",
-                  help="clear words")
+def main():
+    parser = argparse.ArgumentParser(
+        prog="tolino-notes", description="Simple program that takes your highlights from tolino notes and save all new words to file and print it")
+    parser.add_argument("filename")
+    parser.add_argument("-c", "--clear", action="store_true",
+                        help="clear words.txt file")
+    args = parser.parse_args()
 
-(options, args) = parser.parse_args()
+    if (args.clear):
+        open("words.txt", "w").close()
+        sys.exit(0)
+
+    cacheFile = open("words.txt", "a+")
+    noteFile = open(args.filename, "r")
+
+    print_new_words(noteFile, cacheFile)
+
+    noteFile.close()
+    cacheFile.close()
 
 
-if (options.clear):
-    open("words.txt", "w").close()
-    sys.exit(0)
-
-cacheFile = open("words.txt", "a+")
-noteFile = open(sys.argv[len(sys.argv) - 1], "r")
-
-print_new_words(noteFile, cacheFile)
-
-
-noteFile.close()
-cacheFile.close()
+main()

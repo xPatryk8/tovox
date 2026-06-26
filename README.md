@@ -17,13 +17,20 @@ Highlight on page <number>: "word"
 Added on <date>
 ```
 
-##  How to use
+## How to use
 
-1. Copy your `notes.txt` file from Tolino device to the script directory.
+1. Copy your `notes.txt` file from your Tolino device to the script directory.
 2. Run the script:
 
 ```bash
 python tovox.py notes.txt
+```
+
+Or, on Linux, you can make the script executable and run it directly:
+
+```bash
+chmod +x tovox.py
+./tovox.py notes.txt
 ```
 
 New words will be printed to console and all words are save in words.txt file with following format:
